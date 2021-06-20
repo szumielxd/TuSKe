@@ -25,7 +25,7 @@ public class ExprLanguage extends SimplePropertyExpression<Player, String>{
 	@Override
 	@Nullable
 	public String convert(Player p) {
-		return (p != null)? (isSpigot) ? p.spigot().getLocale() : getLanguage(p) : null;
+		return (p != null)? getLanguage(p) : null;
 	}
 
 	@Override

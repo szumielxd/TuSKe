@@ -16,10 +16,10 @@ public enum AcceptedItems {
 	FISHINGROD (new Material[] {Material.FISHING_ROD}), 
 	PICKAXES (new Material[]{Material.DIAMOND_PICKAXE}),  
 	AXES (new Material[]{Material.DIAMOND_AXE}),  
-	SHOVELS (new Material[]{Material.DIAMOND_SPADE}), 
-	TOOLS (new Material[]{Material.DIAMOND_PICKAXE, Material.DIAMOND_AXE, Material.DIAMOND_SPADE}), 
+	SHOVELS (new Material[]{Material.getMaterial("DIAMOND_SPADE") != null ? Material.getMaterial("DIAMOND_SPADE") : Material.getMaterial("DIAMOND_SHOVEL")}), 
+	TOOLS (new Material[]{Material.DIAMOND_PICKAXE, Material.DIAMOND_AXE, (Material.getMaterial("DIAMOND_SPADE") != null ? Material.getMaterial("DIAMOND_SPADE") : Material.getMaterial("DIAMOND_SHOVEL"))}), 
 	ARMOR(new Material[]{Material.DIAMOND_BOOTS, Material.DIAMOND_LEGGINGS, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_HELMET}), 
-	ALL(new Material[]{Material.DIAMOND_BOOTS, Material.DIAMOND_LEGGINGS, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_HELMET, Material.DIAMOND_PICKAXE, Material.DIAMOND_AXE, Material.DIAMOND_SPADE, Material.FISHING_ROD, Material.BOW, Material.DIAMOND_SWORD});
+	ALL(new Material[]{Material.DIAMOND_BOOTS, Material.DIAMOND_LEGGINGS, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_HELMET, Material.DIAMOND_PICKAXE, Material.DIAMOND_AXE, (Material.getMaterial("DIAMOND_SPADE") != null ? Material.getMaterial("DIAMOND_SPADE") : Material.getMaterial("DIAMOND_SHOVEL")), Material.FISHING_ROD, Material.BOW, Material.DIAMOND_SWORD});
 
 	public Material[] valor;
 	AcceptedItems(Material[] m){

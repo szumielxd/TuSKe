@@ -1,12 +1,14 @@
 package com.github.tukenuke.tuske.hooks.landlord.effects;
 
 import com.github.tukenuke.tuske.util.Registry;
+
+import biz.princeps.landlord.api.ILandLord;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-
-import com.jcdesimp.landlord.persistantData.LowOwnedLand;
 
 import javax.annotation.Nullable;
 
@@ -39,20 +41,12 @@ public class EffClaimLand extends Effect{
 	protected void execute(Event e) {
 		Player p = this.p.getSingle(e);
 		Object o = this.l.getSingle(e);
-		if (p == null || o == null)
-			return;
-		Location l;
-		if (o instanceof Chunk)
-			l = ((Chunk)o).getBlock(0, 50, 0).getLocation();
-		else
-			l = (Location)o;
-		if (LowOwnedLand.getApplicableLand(l) == null){
-			LowOwnedLand ol = LowOwnedLand.landFromProperties(p, l.getChunk());
-			ol.save();
-			//Landlord.getInstance().getDatabase().save(ol);
-		}
-			
-		
+		if (p == null || o == null) return;
+		Chunk ch;
+		if (o instanceof Chunk) ch = (Chunk) o;
+		else ch = ((Location) o).getChunk();
+		ILandLord api = (ILandLord) Bukkit.getPluginManager().getPlugin("Landlord");
+		if (api.getWGManager().canClaim(p, ch)) api.getWGManager().claim(ch, p.getUniqueId());
 	}
 
 }

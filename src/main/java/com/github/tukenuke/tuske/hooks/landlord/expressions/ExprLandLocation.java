@@ -1,16 +1,16 @@
 package com.github.tukenuke.tuske.hooks.landlord.expressions;
 
 import com.github.tukenuke.tuske.util.Registry;
-import org.bukkit.Chunk;
+
+import biz.princeps.landlord.api.IOwnedLand;
+
 import org.bukkit.Location;
 
 import javax.annotation.Nullable;
 
-import com.jcdesimp.landlord.persistantData.LowOwnedLand;
-
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 
-public class ExprLandLocation extends SimplePropertyExpression<LowOwnedLand, Location>{
+public class ExprLandLocation extends SimplePropertyExpression<IOwnedLand, Location>{
 	static {
 		Registry.newProperty(ExprLandLocation.class, "land[lord] location", "landclaim");
 	}
@@ -22,14 +22,9 @@ public class ExprLandLocation extends SimplePropertyExpression<LowOwnedLand, Loc
 
 	@Override
 	@Nullable
-	public Location convert(LowOwnedLand ol) {
+	public Location convert(IOwnedLand ol) {
 		if (ol != null){
-			Chunk c = ol.getChunk();
-			Location l = c.getWorld().getHighestBlockAt(c.getBlock(0, 0, 0).getLocation()).getLocation();
-			l.setYaw(315F);
-			l.setPitch(0L);
-			l.add(0.5D, 0, 0.5D);
-			return l;
+			return ol.getALocation();
 		}
 		return null;
 	}

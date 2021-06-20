@@ -8,6 +8,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import javax.annotation.Nullable;
 
 import ch.njol.skript.Skript;
@@ -15,7 +18,7 @@ import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
-import ch.njol.skript.util.Slot;
+import ch.njol.skript.util.slot.Slot;
 import ch.njol.util.Kleenean;
 ;
 
@@ -59,18 +62,30 @@ public class ExprLocalNameOf extends SimpleExpression<String>{
 			return null;
 		Object o = this.o.getSingle(e);
 		String result = null;
-		if (o instanceof Block)
-			result = Translate.getIDTranslate((Block)o);
-		else if (o instanceof ItemStack)
-			result = Translate.getIDTranslate((ItemStack)o); 
-		else if (o instanceof Slot)
-			result = Translate.getIDTranslate(((Slot)o).getItem());
-		else if (o instanceof Entity)
-			result = Translate.getIDTranslate(((Entity)o).getType());
-		else if (o instanceof Enchantment)
-			result = Translate.getIDTranslate((Enchantment)o);
-		else
-			return null;
+		
+		Class<?> slotClass = null;
+		Method slotMethod = null;
+		try {
+			slotClass = Class.forName("ch.njol.skript.util.Slot");
+		} catch (ClassNotFoundException ex) {
+			try {
+				slotClass = Class.forName("ch.njol.skript.util.slot.Slot");
+			} catch (ClassNotFoundException ex1) {
+				ex1.printStackTrace();
+			}
+		}
+		try {
+			slotMethod = slotClass.getMethod("getItem");
+		} catch (NoSuchMethodException | SecurityException e1) {
+			e1.printStackTrace();
+		}
+		
+		if (o instanceof Block) result = Translate.getIDTranslate((Block)o);
+		else if (o instanceof ItemStack) result = Translate.getIDTranslate((ItemStack)o); 
+		else if (o instanceof Entity) result = Translate.getIDTranslate(((Entity)o).getType());
+		else if (o instanceof Enchantment) result = Translate.getIDTranslate((Enchantment)o);
+		else if (slotClass.isInstance(o)) try { result = Translate.getIDTranslate((ItemStack) slotMethod.invoke(o)); } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {}
+		else return null;
 		return new String[]{result};
 	}
 }

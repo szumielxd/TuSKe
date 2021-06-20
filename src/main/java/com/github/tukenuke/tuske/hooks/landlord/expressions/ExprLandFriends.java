@@ -1,16 +1,16 @@
 package com.github.tukenuke.tuske.hooks.landlord.expressions;
 
 import com.github.tukenuke.tuske.util.Registry;
+
+import biz.princeps.landlord.api.IOwnedLand;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
 
-import java.util.ArrayList;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
-
-import com.jcdesimp.landlord.persistantData.Friend;
-import com.jcdesimp.landlord.persistantData.LowOwnedLand;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.classes.Changer.ChangeMode;
@@ -25,7 +25,7 @@ public class ExprLandFriends extends SimpleExpression<OfflinePlayer>{
 		Registry.newProperty(ExprLandFriends.class, "land[lord] friends", "landclaim");
 	}
 
-	private Expression<LowOwnedLand> ol;
+	private Expression<IOwnedLand> ol;
 	@Override
 	public Class<? extends OfflinePlayer> getReturnType() {
 		return OfflinePlayer.class;
@@ -39,7 +39,7 @@ public class ExprLandFriends extends SimpleExpression<OfflinePlayer>{
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Expression<?>[] arg, int arg1, Kleenean arg2, ParseResult arg3) {
-		this.ol = (Expression<LowOwnedLand>) arg[0];
+		this.ol = (Expression<IOwnedLand>) arg[0];
 		return true;
 	}
 
@@ -48,59 +48,37 @@ public class ExprLandFriends extends SimpleExpression<OfflinePlayer>{
 		return "land friends of " + this.ol;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	@Nullable
 	protected OfflinePlayer[] get(Event e) {
-		LowOwnedLand ol = this.ol.getSingle(e);
-		ArrayList<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
-		if (ol != null){
-			for (Friend f : ol.getFriends())
-				players.add(Bukkit.getOfflinePlayer(f.getName()));
-			return players.toArray(new OfflinePlayer[players.size()]);
-		}
+		IOwnedLand ol = this.ol.getSingle(e);
+		if (ol != null) return ol.getFriends().stream().map(Bukkit::getOfflinePlayer).toArray(OfflinePlayer[]::new);
 		return null;
 	}
 	public void change(Event e, Object[] delta, Changer.ChangeMode mode){
-		LowOwnedLand ol = this.ol.getSingle(e);
-		//List<Friend> friends = ol.getFriends();
+		IOwnedLand ol = this.ol.getSingle(e);
 		OfflinePlayer[] ob = null;
-		if (mode != ChangeMode.RESET || mode != ChangeMode.DELETE)
-			ob = (OfflinePlayer[]) delta;
-		for (Friend f : ol.getFriends())
-			Bukkit.broadcastMessage(f.getName());
+		if (mode != ChangeMode.RESET || mode != ChangeMode.DELETE) ob = (OfflinePlayer[]) delta;
 		if (ol != null){
 			switch (mode){
 				case RESET:
 				case DELETE: 
-					for (Friend f : ol.getFriends())
-						ol.removeFriend(f); break;
-				case SET:
-					for (Friend f : ol.getFriends())
-						ol.removeFriend(f);
-				case ADD:
-					if (ob != null)
-						for (OfflinePlayer oop : ob)
-							ol.addFriend(Friend.friendFromOfflinePlayer(oop.getName())); 
+					ol.getFriends().forEach(ol::removeFriend);
 					break;
-							
+				case SET:
+					ol.getFriends().forEach(ol::removeFriend);
+				case ADD:
+					Stream.of(ob).map(OfflinePlayer::getUniqueId).forEach(ol::addFriend);
+					break;	
 				case REMOVE:
-					for (OfflinePlayer oop : ob)
-						ol.removeFriend(Friend.friendFromOfflinePlayer(oop.getName())); break;
+					Stream.of(ob).map(OfflinePlayer::getUniqueId).forEach(ol::removeFriend);
+					break;
 				default:
 					break;
 			}
-			Bukkit.broadcastMessage("Hei");
-			for (Friend f : ol.getFriends())
-				Bukkit.broadcastMessage(f.getName());
-			ol.save();
-			for (Friend f : ol.getFriends())
-				Bukkit.broadcastMessage(f.getName() + " dps");
-			
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public Class<?>[] acceptChange(final Changer.ChangeMode mode) {
 		if (mode != ChangeMode.REMOVE_ALL)
 			return CollectionUtils.array(OfflinePlayer[].class);

@@ -7,12 +7,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.io.FileUtils;
+
+import ch.njol.skript.util.FileUtils;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -136,7 +139,7 @@ public class GitHubUpdater {
 			File jarOld = new File("plugins" + File.separator, PLUGIN_JAR.getName());
 			try {
 				jarOld.delete();
-				FileUtils.copyFileToDirectory(jarNew, new File("plugins" + File.separator));
+				FileUtils.copy(jarNew, new File("plugins" + File.separator));
 				jarNew.delete();
 
 			} catch (IOException e) {
@@ -206,13 +209,11 @@ public class GitHubUpdater {
 				download = (HttpURLConnection) new URL(UPDATE_DOWNLOAD_URL).openConnection();
 				download.setRequestProperty("User-Agent", "Mozilla/5.0");
 				File f = new File(PLUGIN.getDataFolder(), PLUGIN.getName() + ".jar");
-				if (f.exists())
-					f.delete();
-				FileUtils.copyInputStreamToFile(download.getInputStream(), f);
+				if (f.exists()) f.delete();
+				Files.copy(download.getInputStream(), f.toPath());
 			} catch (Exception e) {
 			} finally {
-				if (download != null)
-					download.disconnect();
+				if (download != null) download.disconnect();
 			}
 		});
 		downloadThread.start();

@@ -4,6 +4,7 @@ import com.github.tukenuke.tuske.util.Registry;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
@@ -46,14 +47,16 @@ public class EffPushBlock extends Effect{
 		return "push " + this.b + " upwards";
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void execute(Event e) {
 		if (this.b.getSingle(e) != null){
 			Block b = this.b.getSingle(e);
 			Block b2 = b.getRelative(bf);
 			if (b.getType().isSolid() && (b2.getType().equals(Material.AIR) || !b2.getType().isSolid()) && !b2.getType().equals(Material.CHEST) && !b2.getType().equals(Material.TRAPPED_CHEST) && !b2.getType().equals(Material.FURNACE)){
-				b2.setTypeIdAndData(b.getTypeId(), b.getData(), false);
+				BlockState bs = b2.getState();
+				bs.setType(b.getType());
+				bs.setData(b.getState().getData());
+				bs.update(true, false);
 				b.setType(Material.AIR);
 			}
 			

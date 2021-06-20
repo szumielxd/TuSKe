@@ -3,4 +3,5 @@
 build/
 out/
 server/
+bin/
 dependencies/spigot*

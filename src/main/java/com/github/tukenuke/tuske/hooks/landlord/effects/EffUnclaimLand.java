@@ -3,12 +3,14 @@ package com.github.tukenuke.tuske.hooks.landlord.effects;
 import javax.annotation.Nullable;
 
 import com.github.tukenuke.tuske.util.Registry;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 
-import com.jcdesimp.landlord.persistantData.LowOwnedLand;
-
+import biz.princeps.landlord.api.ILandLord;
+import biz.princeps.landlord.api.IOwnedLand;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -35,18 +37,11 @@ public class EffUnclaimLand extends Effect{
 	@Override
 	protected void execute(Event e) {
 		Object o = this.l.getSingle(e);
-		if (o == null)
-			return;
-		Location l;
-		if (o instanceof Chunk)
-			l = ((Chunk)o).getBlock(0, 50, 0).getLocation();
-		else
-			l = (Location)o;
-		LowOwnedLand ol = LowOwnedLand.getApplicableLand(l);
-		if (ol != null){
-			ol.delete();
-			
-		}
-			
+		if (o == null) return;
+		IOwnedLand land;
+		ILandLord api = (ILandLord) Bukkit.getPluginManager().getPlugin("Landlord");
+		if (o instanceof Chunk) land = api.getWGManager().getRegion((Chunk) o);
+		else land = api.getWGManager().getRegion((Location) o);
+		if (land != null) api.getWGManager().unclaim(land);
 	}
 }

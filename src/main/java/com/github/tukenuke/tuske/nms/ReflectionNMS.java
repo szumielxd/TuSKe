@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import com.github.tukenuke.tuske.util.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -75,7 +76,7 @@ public class ReflectionNMS implements NMS {
 	}
 
 	@Override
-	public void setFastBlock(World world, int x, int y, int z, int blockId, byte data) {		
+	public void setFastBlock(World world, int x, int y, int z, Material type, byte data) {		
 	}
 
 	@Override

@@ -1,11 +1,13 @@
 name: TuSKe
 description: A Skript Addon which has some managers, such as custom enchantments, recipes and GUI inventory, and some general stuffs.
 main: com.github.tukenuke.tuske.TuSKe
-version: @version@
-author: Tuke_Nuke
-website: github.com/Tuke-Nuke/TuSKe
+version: '@version@'
+authors: [Tuke_Nuke, szumielxd]
+website: https://github.com/szumielxd/TuSKe
 depend: [Skript]
 softdepend: [SimpleClans, SimpleClansLegacy, Legendchat, Marriage, ProtocolSupport, ViaVersion, Landlord, Umbaska, SkQuery] #Last two dependencies are just to not register ClickType and InventoryType before them
+api-version: 1.13
+
 commands:
   tuske:
     description: Main command for TuSKe

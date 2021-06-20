@@ -1,27 +1,45 @@
 package com.github.tukenuke.tuske.blockeffect;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.stream.Stream;
+
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 public class BlockPosition {
 	
 	public double x;
 	public double y;
 	public double z;
-	public int id;
+	public Material id;
 	public byte data;
 	
+	@SuppressWarnings("deprecation")
+	@Deprecated
 	public BlockPosition(double x, double y, double z, int id, byte data){
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.id = Stream.of(Material.values()).filter(m -> m.getId() == id).findAny().orElse(null);
+		this.data = data;
+	}
+	
+	public BlockPosition(double x, double y, double z, Material id, byte data){
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.id = id;
 		this.data = data;
-		
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setBlock(Location loc){
 		loc.add(x, y, z);
-		loc.getBlock().setTypeIdAndData(id, data, false);
+		Block b = loc.getBlock();
+		b.setType(id, false);
+		try {
+			b.getClass().getMethod("setData", Byte.TYPE, Boolean.TYPE).invoke(b, data, false);
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+		}
 	}
 	@Override
 	public boolean equals(Object bp){

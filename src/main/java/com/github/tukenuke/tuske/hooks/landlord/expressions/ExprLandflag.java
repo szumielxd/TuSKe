@@ -1,11 +1,13 @@
 package com.github.tukenuke.tuske.hooks.landlord.expressions;
 
 import com.github.tukenuke.tuske.util.Registry;
+
+import biz.princeps.landlord.api.ILLFlag;
+import biz.princeps.landlord.api.IOwnedLand;
+
 import org.bukkit.event.Event;
 
-import com.jcdesimp.landlord.Landlord;
-import com.jcdesimp.landlord.landManagement.Landflag;
-import com.jcdesimp.landlord.persistantData.LowOwnedLand;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -19,11 +21,11 @@ import ch.njol.util.coll.CollectionUtils;
 
 public class ExprLandflag extends SimpleExpression<Boolean>{
 	static {
-		Registry.newSimple(ExprLandflag.class, "landflag %landflag% of %landclaim% for (1¦everyone|2¦friends)");
+		Registry.newSimple(ExprLandflag.class, "landflag %text% of %landclaim% for (1ï¿½everyone|2ï¿½friends)");
 	}
 
-	private Expression<LowOwnedLand> ol;
-	private Expression<Landflag> lf;
+	private Expression<IOwnedLand> ol;
+	private Expression<String> lf;
 	private boolean isFriend = false;
 	@Override
 	public Class<? extends Boolean> getReturnType() {
@@ -38,8 +40,8 @@ public class ExprLandflag extends SimpleExpression<Boolean>{
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Expression<?>[] arg, int arg1, Kleenean arg2, ParseResult arg3) {
-		this.ol = (Expression<LowOwnedLand>) arg[1];
-		this.lf = (Expression<Landflag>) arg[0];
+		this.ol = (Expression<IOwnedLand>) arg[1];
+		this.lf = (Expression<String>) arg[0];
 		if (arg3.mark == 2)
 			this.isFriend = true;
 		
@@ -54,35 +56,30 @@ public class ExprLandflag extends SimpleExpression<Boolean>{
 	@Override
 	@Nullable
 	protected Boolean[] get(Event e) {
-		LowOwnedLand ol = this.ol.getSingle(e);
-		Landflag lf = this.lf.getSingle(e);
-		if (ol != null && lf != null){ 
-			if (isFriend)
-				return new Boolean[] {LowOwnedLand.stringToBool(ol.getLandPerms(false)[1][lf.getPermSlot()])};
-			else
-				return new Boolean[] {ol.canEveryone(lf)};
+		IOwnedLand ol = this.ol.getSingle(e);
+		String lf = this.lf.getSingle(e);
+		Optional<ILLFlag> flag = ol.getFlags().stream().filter(f -> f.getName().equalsIgnoreCase(lf)).findAny();
+		if (ol != null && flag.isPresent()) {
+			if (isFriend) return new Boolean[] {flag.get().getFriendStatus()};
+			return new Boolean[] {flag.get().getAllStatus()};
 		}
 		return new Boolean[] {false};
 	}
 	public void change(Event e, Object[] delta, Changer.ChangeMode mode){
-		LowOwnedLand ol = this.ol.getSingle(e);
-		Landflag lf = this.lf.getSingle(e);
-		if (ol != null && lf != null){
-			String bo = "1";
-			if ((Boolean) delta[0] == false)
-				bo = "0";
-			int isf = 0;
-			if (isFriend)
-				isf++;
-			String[][] perms = ol.getLandPerms(false);
-			perms[isf][lf.getPermSlot()] = bo;
-			ol.setPermissions(ol.permsToString(perms));
-			Landlord.getInstance().getDatabase().save(ol);
+		IOwnedLand ol = this.ol.getSingle(e);
+		String lf = this.lf.getSingle(e);
+		Optional<ILLFlag> flag = ol.getFlags().stream().filter(f -> f.getName().equalsIgnoreCase(lf)).findAny();
+		if (ol != null && flag.isPresent()){
+			ILLFlag f = flag.get();
+			if (isFriend) {
+				if ((Boolean) delta[0] != f.getFriendStatus()) f.toggleFriends();
+			} else {
+				if ((Boolean) delta[0] != f.getAllStatus()) f.toggleAll();
+			}
 		}
 		
 		
 	}
-	@SuppressWarnings("unchecked")
 	public Class<?>[] acceptChange(final Changer.ChangeMode mode) {
 		if (mode == ChangeMode.SET)
 			return CollectionUtils.array(Boolean.class);

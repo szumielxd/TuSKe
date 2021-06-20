@@ -199,7 +199,7 @@ public abstract class EffectSection extends Condition {
 		toStop.forEach(LogHandler::stop); //Stopping them
 		SkriptLogger.logAll(logger.getLog()); //Sending the errors to Skript logger.
 	}
-	@SuppressWarnings("unchecked")
+	@SafeVarargs
 	public static boolean isCurrentSection(Class<? extends EffectSection>... classes) {
 		return getCurrentSection(classes) != null;
 	}

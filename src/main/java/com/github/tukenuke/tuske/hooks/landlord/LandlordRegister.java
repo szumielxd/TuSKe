@@ -2,14 +2,11 @@ package com.github.tukenuke.tuske.hooks.landlord;
 
 import ch.njol.skript.SkriptAddon;
 import ch.njol.skript.lang.ParseContext;
-import com.jcdesimp.landlord.Landlord;
-import com.jcdesimp.landlord.landManagement.Landflag;
-import com.jcdesimp.landlord.persistantData.LowOwnedLand;
 import com.github.tukenuke.tuske.util.SimpleType;
 
+import biz.princeps.landlord.api.IOwnedLand;
+
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Tuke_Nuke on 10/04/2017
@@ -26,45 +23,21 @@ public class LandlordRegister {
 	}
 
 	private void types() {
-		new SimpleType<LowOwnedLand>(LowOwnedLand.class, "landclaim", "land ?claim(s)?"){
+		new SimpleType<IOwnedLand>(IOwnedLand.class, "landclaim", "land ?claim(s)?"){
 			@Override
 			@Nullable
-			public LowOwnedLand parse(String s, ParseContext arg1) {
+			public IOwnedLand parse(String s, ParseContext arg1) {
 				return null;
 			}
 
 			@Override
-			public String toString(LowOwnedLand ol, int arg1) {
-				return String.valueOf(ol.getId());
+			public String toString(IOwnedLand ol, int arg1) {
+				return String.valueOf(ol.getName());
 			}
 
 			@Override
-			public String toVariableNameString(LowOwnedLand ol) {
-				return "ownedland:" + ol.getId();
-			}};
-		final Map<String, Landflag> fixedFlags = new HashMap<>();
-		for (Map.Entry<String, Landflag> entry: Landlord.getInstance().getFlagManager().getRegisteredFlags().entrySet()){
-			fixedFlags.put(entry.getKey().toLowerCase(), entry.getValue());
-		}
-
-		new SimpleType<Landflag>(Landflag.class, "landflag", "land ?flags(s)?"){
-			@Override
-			@Nullable
-			public Landflag parse(String s, ParseContext arg1) {
-				if (fixedFlags.containsKey((s = s.toLowerCase())))
-					return fixedFlags.get(s);
-				return null;
-			}
-
-			@Override
-			public String toString(Landflag lf, int arg1) {
-				return lf.getDisplayName().toLowerCase();
-			}
-
-			@Override
-			public String toVariableNameString(Landflag lf) {
-				return "ownedland:" + lf.getDisplayName().toLowerCase();
-
+			public String toVariableNameString(IOwnedLand ol) {
+				return "ownedland:" + ol.getName();
 			}};
 
 	}

@@ -1,16 +1,17 @@
 package com.github.tukenuke.tuske.hooks.landlord.expressions;
 
 import com.github.tukenuke.tuske.util.Registry;
+
+import biz.princeps.landlord.api.IOwnedLand;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import javax.annotation.Nullable;
 
-import com.jcdesimp.landlord.persistantData.LowOwnedLand;
-
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 
-public class ExprLandOwner extends SimplePropertyExpression<LowOwnedLand, OfflinePlayer>{
+public class ExprLandOwner extends SimplePropertyExpression<IOwnedLand, OfflinePlayer>{
 	static {
 		Registry.newProperty(ExprLandOwner.class, "land[lord] owner", "landclaim");
 	}
@@ -20,11 +21,10 @@ public class ExprLandOwner extends SimplePropertyExpression<LowOwnedLand, Offlin
 		return OfflinePlayer.class;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	@Nullable
-	public OfflinePlayer convert(LowOwnedLand ol) {
-		return Bukkit.getOfflinePlayer(ol.getOwnerUsername());
+	public OfflinePlayer convert(IOwnedLand ol) {
+		return Bukkit.getOfflinePlayer(ol.getOwner());
 	}
 
 	@Override

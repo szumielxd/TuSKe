@@ -1,9 +1,9 @@
 package com.github.tukenuke.tuske.manager.recipe;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import ch.njol.skript.Skript;
-import javafx.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
@@ -34,7 +34,7 @@ public class RecipeManager implements Listener{
 		// 1 == Everything is matching correctly, let it work alone
 		// 0 == Found a matching recipe but the ingredients doesn't have same item meta
 		// -1 == No custom recipe found, let it work alone
-		Pair<Integer, Recipe> pair = getMatchingRecipe(e.getInventory().getMatrix());
+		Entry<Integer, Recipe> pair = getMatchingRecipe(e.getInventory().getMatrix());
 		if (pair.getKey() == 0) {
 			e.getInventory().setResult(new ItemStack(Material.AIR)); // workaround to cancel the event
 		} else if (pair.getKey() == 1) {
@@ -70,7 +70,7 @@ public class RecipeManager implements Listener{
 	 * @param ingredients - The ingredients to match with a recipe
 	 * @return The matching level
 	 */
-	public Pair<Integer, Recipe> getMatchingRecipe(ItemStack... ingredients) {
+	public Entry<Integer, Recipe> getMatchingRecipe(ItemStack... ingredients) {
 		int matchingLevel = -1;
 		Recipe r = null;
 		for (Recipe recipe : recipes) {
@@ -83,7 +83,7 @@ public class RecipeManager implements Listener{
 				//Else it will try to find another matching one.
 			}
 		}
-		return new Pair<>(matchingLevel, r);
+		return new AbstractMap.SimpleEntry<>(matchingLevel, r);
 	}
 	public Recipe getCustomRecipe(Recipe rec){
 		/**for (Recipe recipe : recipes)
@@ -93,7 +93,6 @@ public class RecipeManager implements Listener{
 		return getIfContainsCustomRecipe(rec.getResult(), getIngredients(rec));
 	}
 
-	@SuppressWarnings("unchecked")
 	public void removeRecipe(Recipe... recipes){
 		if (recipes == null || recipes.length == 0)
 			return;

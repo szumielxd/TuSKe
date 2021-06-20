@@ -47,7 +47,7 @@ public class EffSetFastBlock extends Effect{
 			public void run() {
 				Set<Chunk> chunksToUpdate = new HashSet<>();
 				for (Block l : loc.getArray(e)){
-					nms.setFastBlock(l.getWorld(), l.getX(), l.getY(), l.getZ(), i.getTypeId(), i.getData().getData());
+					nms.setFastBlock(l.getWorld(), l.getX(), l.getY(), l.getZ(), i.getType(), i.getData().getData());
 					if (!chunksToUpdate.contains(l.getChunk()))
 						chunksToUpdate.add(l.getChunk());
 				}

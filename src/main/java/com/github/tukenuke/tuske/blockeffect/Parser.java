@@ -2,15 +2,18 @@ package com.github.tukenuke.tuske.blockeffect;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 
 import com.github.tukenuke.tuske.TuSKe;
 
 public class Parser {
-	private BlockPosition bp = new BlockPosition(0D, 0D, 0D, 0, (byte) 1);
+	private BlockPosition bp = new BlockPosition(0D, 0D, 0D, Material.AIR, (byte) 1);
 	int loopTimes = 0;
 	String loop, loopMatch;
+	
 	public boolean parser(String str){
 		TuSKe.debug(1, str);
 		String match = null;
@@ -22,6 +25,9 @@ public class Parser {
 		} else if (str.matches("^(b|d|x|y|z)\\d+.*")){
 			parseBlock(str);
 			match = "(b|d|x|y|z)\\d+";
+		} else if (str.matches("^b[A-Z_]+.*")){
+			parseBlock(str);
+			match = "b[A-Z_]+";
 		} else if (str.matches("^w\\d+(t|s|m)?.*")) {
 			match = "w\\d+(t|s|m)?";
 			Long t = Long.valueOf(str.replaceFirst("w(\\d+)(t|s|m)?.*", "$1"));
@@ -50,35 +56,38 @@ public class Parser {
 		}
 		return true;
 	}
+	
+	@SuppressWarnings("deprecation")
 	private void parseBlock(String str){
-
-	if (str.matches("^b\\d+.*")){
-		Integer i = Integer.valueOf(str.replaceFirst("(b|d|x|y|z)(\\d+).*", "$2"));
-		bp.id = i;		
-	} else if (str.matches("^d\\d+.*")){
-		Integer i =Integer.valueOf(str.replaceFirst("(b|d|x|y|z)(\\d+).*", "$2"));
-		bp.data = i.byteValue();
-	} else if (str.matches("^x\\d+.*")){
-		Double i = Double.valueOf(str.replaceFirst("(b|d|x|y|z)(\\d+).*", "$2"));
-		bp.x = i;
-	} else if (str.matches("^y\\d+.*")){
-		Double i = Double.valueOf(str.replaceFirst("(b|d|x|y|z)(\\d+).*", "$2"));
-		bp.y = i;
-	} else if (str.matches("^z\\d+.*")){
-		Double i = Double.valueOf(str.replaceFirst("(b|d|x|y|z)(\\d+).*", "$2"));
-		bp.z = i;
+		if (str.matches("^b\\d+.*")){
+			Integer i = Integer.valueOf(str.replaceFirst("(b|d|x|y|z)(\\d+).*", "$2"));
+			bp.id = Stream.of(Material.values()).filter(m -> m.getId() == i).findAny().orElse(null);		
+		} else if (str.matches("^b[A-Z_]+.*")){
+			Material m = Material.getMaterial(str.replaceFirst("(b|d|x|y|z)([A-Za-z_]+).*", "$2"));
+			bp.id = m;
+		} else if (str.matches("^d\\d+.*")){
+			Integer i = Integer.valueOf(str.replaceFirst("(b|d|x|y|z)(\\d+).*", "$2"));
+			bp.data = i.byteValue();
+		} else if (str.matches("^x\\d+.*")){
+			Double i = Double.valueOf(str.replaceFirst("(b|d|x|y|z)(\\d+).*", "$2"));
+			bp.x = i;
+		} else if (str.matches("^y\\d+.*")){
+			Double i = Double.valueOf(str.replaceFirst("(b|d|x|y|z)(\\d+).*", "$2"));
+			bp.y = i;
+		} else if (str.matches("^z\\d+.*")){
+			Double i = Double.valueOf(str.replaceFirst("(b|d|x|y|z)(\\d+).*", "$2"));
+			bp.z = i;
+		}	
 	}
 	
-		
-	}
 	private boolean parser(String str, String match){
 		str = str.replaceFirst(match, "");
 		//TuSKe.debug("AA "+ str, match);
 		if (!str.equalsIgnoreCase(""))
 			return parser(str);
-		return false;
-		
+		return false;	
 	}
+	
 	private void parseLoop(int times, String str, String match){
 		//TuSKe.debug("Debug time: " + times, str, match);
 		if (times-- > 0){
@@ -93,9 +102,8 @@ public class Parser {
 			loop = null;
 			loopMatch = null;
 		}
-	
-		
 	}
+	
 	@SuppressWarnings("unchecked")
 	public <T> T getMatch(String str, String pattern, int group){
 		Pattern p = Pattern.compile(pattern);
@@ -107,8 +115,8 @@ public class Parser {
 			//}
 		}
 		return null;
-		
 	}
+	
 	private String fixBracket(String str){
 		return str.replaceAll("(\\(|\\))", "\\\\$1");
 	}

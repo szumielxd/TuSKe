@@ -7,7 +7,6 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import com.github.tukenuke.tuske.TuSKe;
 import com.github.tukenuke.tuske.util.Registry;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -75,9 +74,9 @@ public class ExprRGBColor extends SimpleExpression<Integer>{
 			int blue = 0;
 			//It works only for the first one in expression
 			if (array[0] instanceof Color){
-				red = ((Color)array[0]).getBukkitColor().getRed();
-				green = ((Color)array[0]).getBukkitColor().getGreen();
-				blue = ((Color)array[0]).getBukkitColor().getBlue();
+				red = ((Color)array[0]).asBukkitColor().getRed();
+				green = ((Color)array[0]).asBukkitColor().getGreen();
+				blue = ((Color)array[0]).asBukkitColor().getBlue();
 			} else if (array[0] instanceof ItemStack || array[0] instanceof ItemType){
 				ItemMeta im = array[0] instanceof ItemType ? ((ItemType)array[0]).getRandom().getItemMeta() :
 						((ItemStack)array[0]).getItemMeta();
@@ -121,7 +120,6 @@ public class ExprRGBColor extends SimpleExpression<Integer>{
 			}
 		}
 	}
-	@SuppressWarnings("unchecked")
 	public Class<?>[] acceptChange(final Changer.ChangeMode mode) {
 		if (mode == ChangeMode.SET)
 			return CollectionUtils.array(Number[].class);

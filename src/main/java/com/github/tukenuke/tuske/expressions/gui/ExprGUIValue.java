@@ -126,7 +126,7 @@ public class ExprGUIValue extends SimpleExpression<Object>{
 				case 11:
 					Inventory c = InventoryUtils.getClickedInventory(((InventoryClickEvent) e));
 					if (c != null)
-						return new String[]{c.getName()};
+						return new String[]{((InventoryClickEvent) e).getView().getTitle()};
 					break;
 				case 12:
 					if (gui != null)
@@ -144,7 +144,7 @@ public class ExprGUIValue extends SimpleExpression<Object>{
 				case 10: return ((InventoryCloseEvent)e).getViewers().toArray();
 				case 11:
 					if (((InventoryCloseEvent) e).getInventory() != null)
-						return new String[]{((InventoryCloseEvent) e).getInventory().getName()};
+						return new String[]{((InventoryClickEvent) e).getView().getTitle()};
 					break;
 				case 13:
 					return new GUIInventory[]{gui};
@@ -153,7 +153,6 @@ public class ExprGUIValue extends SimpleExpression<Object>{
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Changer<Slot> changer = null;
 	public void change(final Event e, Object[] delta, Changer.ChangeMode mode){
 		if (e instanceof InventoryClickEvent) {
