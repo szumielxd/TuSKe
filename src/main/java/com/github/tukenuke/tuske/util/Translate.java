@@ -39,7 +39,7 @@ public class Translate{
 			String methodName = methodNames.get(version.split("_")[1]);
 			if (methodName != null) Item_getName = ItemStack_getItem.getReturnType().getMethod(methodName);
 			else Item_getName = Stream.of(ItemStack_getItem.getReturnType().getMethods()).filter(m -> String.class.equals(m.getReturnType()))
-					.filter(m -> Arrays.equals(m.getParameterTypes(), new Class<?>[] {CraftItemStack_asNMSCopy.getReturnType()})).findAny().orElseThrow();
+					.filter(m -> Arrays.equals(m.getParameterTypes(), new Class<?>[] {CraftItemStack_asNMSCopy.getReturnType()})).findAny().get();
 		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}

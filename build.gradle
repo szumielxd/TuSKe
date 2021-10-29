@@ -71,7 +71,7 @@ processResources {
 }
 
 jar {
-	//archiveFileName = 'TuSKe'+configurations.version+'.jar'
+	archiveFileName = 'TuSKe-'+project.property('version')+'-SZPatchX'+'.jar'
 	from {
 		configurations.compileWithJar.collect { it.isDirectory() ? it : zipTree(it) }
 	}
