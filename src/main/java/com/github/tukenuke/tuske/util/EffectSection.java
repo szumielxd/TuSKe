@@ -1,6 +1,7 @@
 package com.github.tukenuke.tuske.util;
 
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 import ch.njol.skript.ScriptLoader;
@@ -23,6 +24,14 @@ public abstract class EffectSection extends Condition {
 	private boolean hasIfOrElseIf = false;
 	private boolean executeNext = true;
 	protected static HashMap<Class<? extends EffectSection>, EffectSection> map = new HashMap<>();
+	
+	private static Field hasDelayBefore;
+	
+	static {
+		try {
+			hasDelayBefore = ScriptLoader.class.getField("hasDelayBefore");
+		} catch (NoSuchFieldException | SecurityException e) {}
+	}
 
 	public EffectSection(){
 		if (this instanceof LazyEffectSection) //This one doesn't need to load the section separated.
@@ -108,11 +117,20 @@ public abstract class EffectSection extends Condition {
 		if (section != null && name != null && events != null && events.length > 0) {
 			String previousName = ScriptLoader.getCurrentEventName();
 			Class<? extends Event>[] previousEvents = ScriptLoader.getCurrentEvents();
-			Kleenean previousDelay = ScriptLoader.hasDelayBefore;
+			Kleenean previousDelay;
+			try {
+				previousDelay = (Kleenean) hasDelayBefore.get(null); // legacy version
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				previousDelay = ScriptLoader.getHasDelayBefore(); // fallback to Skript 2.6
+			}
 			ScriptLoader.setCurrentEvent(name, events);
 			loadSection(setNext);
 			ScriptLoader.setCurrentEvent(previousName, previousEvents);
-			ScriptLoader.hasDelayBefore = previousDelay;
+			try {
+				hasDelayBefore.set(null, previousDelay); // legacy version
+			} catch (NullPointerException | IllegalArgumentException | IllegalAccessException e) {
+				ScriptLoader.setHasDelayBefore(previousDelay); // fallback to Skript 2.6
+			}
 		}
 	}
 

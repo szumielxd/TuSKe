@@ -1,6 +1,7 @@
 package com.github.tukenuke.tuske.util;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.List;
 
 import ch.njol.skript.ScriptLoader;
@@ -19,14 +20,19 @@ public class ParserUtils {
 	
 	private static Constructor<SkriptParser> newParser = null; 
 	private static Object newParserInstance = null;
+	private static Field currentSections = null;
 	static {
 		Class<?> parserInstanceClass = ReflectionUtils.getClass("ch.njol.skript.lang.parser.ParserInstance");
 		if (parserInstanceClass != null){
 			newParser = (Constructor<SkriptParser>) ReflectionUtils.getConstructor(SkriptParser.class, parserInstanceClass, String.class, int.class, ParseContext.class);
 			newParserInstance = ReflectionUtils.getField(parserInstanceClass, null, "DUMMY");
 		}
+		try {
+			currentSections = ScriptLoader.class.getField("currentSections");
+		} catch (NoSuchFieldException | SecurityException e) {}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<TriggerSection> getTriggerSection(Object from){
 		if (newParser != null){
 			if (from != null || newParserInstance == null)
@@ -34,7 +40,11 @@ public class ParserUtils {
 			return ReflectionUtils.getField(newParserInstance.getClass(), newParserInstance, "currentSections");
 			
 		}
-		return ScriptLoader.currentSections;
+		try {
+			return (List<TriggerSection>) currentSections.get(null); // legacy version
+		} catch (NullPointerException | IllegalArgumentException | IllegalAccessException e) {
+			return ScriptLoader.getCurrentSections(); // fallback to Skript 2.6
+		}
 	}
 	/**
 	 * 

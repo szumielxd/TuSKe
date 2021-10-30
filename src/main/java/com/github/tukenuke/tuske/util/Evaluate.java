@@ -18,6 +18,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -32,6 +33,14 @@ public class Evaluate {
 
 	public static Evaluate getInstance() {
 		return ourInstance;
+	}
+	
+	private static Field currentScriptField = null;
+	
+	static {
+		try {
+			currentScriptField = ScriptLoader.class.getField("currentScript");
+		} catch (NoSuchFieldException | SecurityException e) {}
 	}
 
 	private Pattern[] filterSyntaxes = null;
@@ -73,7 +82,13 @@ public class Evaluate {
 			try {
 				Commands.currentArguments = args; //In case it is evaluated in a command, it will make the arguments work
 				if (parseString) {
-					ScriptLoader.currentScript = currentScript;
+					
+					try {
+						currentScriptField.set(null, currentScript); // legacy version
+					} catch (NullPointerException | IllegalArgumentException | IllegalAccessException ex) {
+						ScriptLoader.setCurrentScript(currentScript); // fallback to Skript 2.6
+					}
+					
 					VariableString vs = VariableString.newInstance(code.replaceAll("\"", "\"\""));
 					if (vs != null)
 						code = vs.getSingle(e);
@@ -99,7 +114,13 @@ public class Evaluate {
 					}
 					toRemove.forEach(Node::remove);
 				}
-				ScriptLoader.currentScript = c;
+				
+				try {
+					currentScriptField.set(null, c); // legacy version
+				} catch (NullPointerException | IllegalArgumentException | IllegalAccessException ex) {
+					ScriptLoader.setCurrentScript(c); // fallback to Skript 2.6
+				}
+				
 				ScriptLoader.setCurrentEvent("evaluate effect", e.getClass());
 				TriggerSection ts = new TriggerSection(c.getMainNode()) {
 					@Override
@@ -113,7 +134,13 @@ public class Evaluate {
 					}
 				};
 				ScriptLoader.deleteCurrentEvent();
-				ScriptLoader.currentScript = null;
+				
+				try {
+					currentScriptField.set(null, null); // legacy version
+				} catch (NullPointerException | IllegalArgumentException | IllegalAccessException ex) {
+					ScriptLoader.setCurrentScript(null); // fallback to Skript 2.6
+				}
+				
 				Commands.currentArguments = null;
 				setVariable(log, e, results);
 				TriggerItem.walk(ts, e);

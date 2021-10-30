@@ -17,6 +17,7 @@ import com.github.tukenuke.tuske.util.Evaluate;
 import com.github.tukenuke.tuske.util.Registry;
 import org.bukkit.event.Event;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -26,8 +27,14 @@ import java.util.StringJoiner;
  */
 @NoDoc
 public class EffEvaluateSection extends EffectSection {
+	
+	private static Field currentScriptField = null;
+	
 	static {
 		Registry.newEffect(EffEvaluateSection.class, "eval[uate] [logging [[the] error[s]] in %-objects%] [with safety]");
+		try {
+			currentScriptField = ScriptLoader.class.getField("currentScript");
+		} catch (NoSuchFieldException | SecurityException e) {}
 	}
 
 	private Config currentScript;
@@ -71,7 +78,13 @@ public class EffEvaluateSection extends EffectSection {
 		}
 		args = Commands.currentArguments;
 		withSafety = parseResult.expr.contains("with safety");
-		currentScript = ScriptLoader.currentScript;
+		
+		try {
+			currentScript = (Config) currentScriptField.get(null); // legacy version
+		} catch (NullPointerException | IllegalArgumentException | IllegalAccessException e) {
+			currentScript = ScriptLoader.getCurrentScript(); // fallback to Skript 2.6
+		}
+		
 		return true;
 	}
 
