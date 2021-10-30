@@ -2,6 +2,8 @@ package com.github.tukenuke.tuske.manager.gui.v2;
 
 import ch.njol.skript.SkriptEventHandler;
 import ch.njol.skript.lang.*;
+import ch.njol.util.NonNullPair;
+
 import com.github.tukenuke.tuske.TuSKe;
 import com.github.tukenuke.tuske.util.ReflectionUtils;
 import com.github.tukenuke.tuske.listeners.GUIListener;
@@ -25,10 +27,22 @@ public class SkriptGUIEvent extends SkriptEvent {
 		return instance;
 	}
 
-	private final Map<Class, List<Trigger>> triggers = ReflectionUtils.getField(SkriptEventHandler.class, null, "triggers");
+	private final Map<Class<?>, List<Trigger>> triggersMap;
+	private final List<NonNullPair<Class<? extends Event>, Trigger>> triggersList;
 	private final List<GUIListener> listeners = new ArrayList<>();
 	private boolean registered = false;
+	@SuppressWarnings("unchecked")
 	private SkriptGUIEvent() {
+		Object obj = ReflectionUtils.getField(SkriptEventHandler.class, null, "triggers");
+		if (obj instanceof Map) {
+			// executed for legacy Skript versions
+			this.triggersMap = (Map<Class<?>, List<Trigger>>) obj;
+			this.triggersList = null;
+		} else {
+			// valid for Skript 2.6 and probably above
+			this.triggersMap = null;
+			this.triggersList = (List<NonNullPair<Class<? extends Event>, Trigger>>) obj;
+		}
 		register();
 	}
 
@@ -82,22 +96,15 @@ public class SkriptGUIEvent extends SkriptEvent {
 	}
 	private void addTrigger(Trigger t, int priority, Class<? extends Event>... clzz) {
 		if (priority == 0) {
-			for (Class clz : clzz) {
-				List<Trigger> current = triggers.get(clz);
-				List<Trigger> newList = new ArrayList<>();
-				if (current == null) {
-					//It will add a new array in case it doesn't have the event.
-					newList.add(t);
-					triggers.put(clz, newList);
+			for (Class<? extends Event> clz : clzz) {
+				//It will add a new array in case it doesn't have the event.
+				//It will put this trigger at first index
+				//This little workaround needed just to not
+				//have conflicts between different objects.
+				if (this.triggersList != null) {
+					this.triggersList.add(0, new NonNullPair<>(clz, t)); // executed for Skript 2.6 and probably above
 				} else {
-					//It will put this trigger at first index
-					//Then adding the rest all again.
-					//This little workaround needed just to not
-					//have conflicts between different objects.
-					newList.addAll(current);
-					current.clear();
-					current.add(t);
-					current.addAll(newList);
+					this.triggersMap.computeIfAbsent(clz, (c) -> new ArrayList<>()).add(0, t); // executed for legacy versions
 				}
 			}
 		} else {
