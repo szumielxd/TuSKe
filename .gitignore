@@ -1,7 +1,10 @@
 .idea/
+.settings/
 .gradle/
 build/
 out/
 server/
 bin/
 dependencies/spigot*
+.classpath
+.project
