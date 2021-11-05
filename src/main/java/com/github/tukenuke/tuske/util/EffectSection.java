@@ -120,7 +120,7 @@ public abstract class EffectSection extends Condition {
 			Kleenean previousDelay;
 			try {
 				previousDelay = (Kleenean) hasDelayBefore.get(null); // legacy version
-			} catch (IllegalArgumentException | IllegalAccessException e) {
+			} catch (NullPointerException | IllegalArgumentException | IllegalAccessException e) {
 				previousDelay = ScriptLoader.getHasDelayBefore(); // fallback to Skript 2.6
 			}
 			ScriptLoader.setCurrentEvent(name, events);
