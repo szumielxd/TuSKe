@@ -1,6 +1,9 @@
 
 # TuSKe - Skript Addon
 
+![GitHub all releases](https://img.shields.io/github/downloads/szumielxd/TuSke/total)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/szumielxd/TuSke)
+
 ## Useful links
 
 * [Beta releases page](http://github.com/szumielxd/TuSKe/releases)
