@@ -74,7 +74,6 @@ public class EnumType extends ClassInfo{
 					return c.getSimpleName() + "." +e.name();
 				}
 
-				@Override
 				public String getVariableNamePattern() {
 					return "(" + c.getSimpleName().toLowerCase() + "\\.)?.+";
 				}
@@ -109,7 +108,6 @@ public class EnumType extends ClassInfo{
 					return c.getSimpleName() + "." +e.name();
 				}
 
-				@Override
 				public String getVariableNamePattern() {
 					return "(" + c.getSimpleName().toLowerCase() + "\\.)?.+";
 				}

@@ -55,7 +55,6 @@ public abstract class SimpleType<T> extends ClassInfo<T> implements Changer<T>{
 			Classes.registerClass(user(pattern)
 					.defaultExpression(new EventValueExpression<>(clz))
 					.parser(new Parser<T>() {
-						@Override
 						public String getVariableNamePattern() {
 							return variableName;
 						}
