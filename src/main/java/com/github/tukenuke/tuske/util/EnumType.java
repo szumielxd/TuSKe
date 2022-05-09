@@ -13,28 +13,27 @@ import com.github.tukenuke.tuske.TuSKe;
 
 import java.util.StringJoiner;
 
-@SuppressWarnings("unchecked")
-public class EnumType extends ClassInfo{
+public class EnumType <E extends Enum<E>> extends ClassInfo<E> {
 
-	public <T extends Enum<T>> EnumType(final Class<T> c, String code, String regexUser) {
+	public EnumType(final Class<E> c, String code, String regexUser) {
 		this(c, code, regexUser, null);
 	}
-	public <T extends Enum<T>> EnumType(final Class<T> c, String code, String regexUser, String languageNode) {
+	public EnumType(final Class<E> c, String code, String regexUser, String languageNode) {
 		super(c, code);
-		EnumUtils<T> enumUtils = languageNode != null ? new EnumUtils<>(c, languageNode) : null;
+		EnumUtils<E> enumUtils = languageNode != null ? new EnumUtils<>(c, languageNode) : null;
 		String names = enumUtils != null ? enumUtils.getAllNames() : null;
 		if (names != null && !names.isEmpty())
 			usage(enumUtils.getAllNames());
 		else
 			usage(getAllNames(c));
-		Parser<T> parser = getParser(c, enumUtils);
+		Parser<E> parser = getParser(c, enumUtils);
 		try {
 			Classes.registerClass(user(regexUser)
 					.defaultExpression(new EventValueExpression<>(c))
 					.parser(parser));
 		} catch (Exception e) {
 			if (!TuSKe.getInstance().getConfig().isSet("cancel_override_type." + code) && enumUtils != null) {
-				ClassInfo<T> ci = Classes.getExactClassInfo(c);
+				ClassInfo<E> ci = Classes.getExactClassInfo(c);
 				if (ci.getParser() != null && !ci.getParser().getClass().getPackage().getName().startsWith(Skript.class.getPackage().getName()))
 					ReflectionUtils.setField(ClassInfo.class, ci, "parser", parser);
 			} else
@@ -48,7 +47,7 @@ public class EnumType extends ClassInfo{
 				@Override
 				@Nullable
 				public T parse(String name, ParseContext arg1) {
-					name = name.replaceAll("_", " ");
+					name = name.replace("_", " ");
 					if (name.startsWith(c.getSimpleName().toUpperCase() + "."))
 						name = name.split("\\.")[1];
 					T result = enumUtils != null ? enumUtils.parse(name) : null;
@@ -83,7 +82,7 @@ public class EnumType extends ClassInfo{
 				@Override
 				@Nullable
 				public T parse(String name, ParseContext arg1) {
-					name = name.replaceAll("_", " ");
+					name = name.replace("_", " ");
 					if (name.startsWith(c.getSimpleName().toUpperCase() + ".")) {
 						name = name.split("\\.")[1];
 						T result = enumUtils != null ? enumUtils.parse(name) : null;
@@ -115,15 +114,15 @@ public class EnumType extends ClassInfo{
 		}
 	}
 
-	public static String getAllNames(Class<? extends Enum> enumClz) {
+	public static String getAllNames(Class<? extends Enum<?>> enumClz) {
 		StringJoiner sj = new StringJoiner(", ");
-		for (Enum e : enumClz.getEnumConstants()) {
+		for (Enum<?> e : enumClz.getEnumConstants()) {
 			sj.add(toString(e));
 		}
 		return sj.toString();
 	}
 	public static String toString(Enum<?> e){
-		return e.name().toLowerCase().replaceAll("_", " ");
+		return e.name().toLowerCase().replace("_", " ");
 	}
 	public static String fromString(String str){
 		return str.toUpperCase().replaceAll("\\s+", "_");
