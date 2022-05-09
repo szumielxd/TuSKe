@@ -1,7 +1,6 @@
 package com.github.tukenuke.tuske.documentation;
 
 import java.io.*;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -49,19 +48,19 @@ public class Documentation implements Runnable{
 			addons.put(addon.plugin.getClass().getPackage().getName(), new AddonInfo(addon.getName()));
 		//Now, let's organize all syntaxes
 		EventValuesGetter getter = new EventValuesGetter();
-		for (SkriptEventInfo info : Skript.getEvents())
+		for (SkriptEventInfo<?> info : Skript.getEvents())
 			addSyntax(getAddon(info.c).getEvents(), new SyntaxInfo(info, getter));
-		for (SyntaxElementInfo info : Skript.getConditions()) {
+		for (SyntaxElementInfo<?> info : Skript.getConditions()) {
 			if (EffectSection.class.isAssignableFrom(info.c)) //Separate effect sections to effects instead of conditions
 				addSyntax(getAddon(info.c).getEffects(), new SyntaxInfo(info));
 			else
 				addSyntax(getAddon(info.c).getConditions(), new SyntaxInfo(info));
 		}
-		for (SyntaxElementInfo info : Skript.getEffects())
+		for (SyntaxElementInfo<?> info : Skript.getEffects())
 			addSyntax(getAddon(info.c).getEffects(), new SyntaxInfo(info));
-		Class[] types = new Class[Classes.getClassInfos().size()];
+		Class<?>[] types = new Class[Classes.getClassInfos().size()];
 		int x = 0;
-		for (ClassInfo info : Classes.getClassInfos())
+		for (ClassInfo<?> info : Classes.getClassInfos())
 			types[x++] = info.getC();
 		//A LogHandler for expressions since it catch the changers, which can throw errors in console
 		//such as "Expression X can only be used in event Y"
@@ -70,11 +69,11 @@ public class Documentation implements Runnable{
 		log.clear();
 		log.stop();
 
-		for (ClassInfo info : Classes.getClassInfos())
+		for (ClassInfo<?> info : Classes.getClassInfos())
 			addSyntax(getAddon(info).getTypes(), new SyntaxInfo(info));
 		Collection<JavaFunction<?>> functions = ReflectionUtils.invokeMethod(Functions.class, "getJavaFunctions", null);
 		if (functions != null)
-			for (JavaFunction info : functions) //Only Skript use this...
+			for (JavaFunction<?> info : functions) //Only Skript use this...
 				addSyntax(getAddon(info.getClass()).getFunctions(), new SyntaxInfo(info));
 		//Before, lets delete old files...
 		File docsDir = new File(instance.getDataFolder(), "documentation/");
@@ -114,7 +113,7 @@ public class Documentation implements Runnable{
 		list.add(syntax);
 	}
 
-	public AddonInfo getAddon(ClassInfo info) {
+	public AddonInfo getAddon(ClassInfo<?> info) {
 		AddonInfo addon;
 		if (info.getParser() != null)
 			addon = getAddon(info.getParser().getClass());
