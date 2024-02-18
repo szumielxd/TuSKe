@@ -40,14 +40,10 @@ dependencies {
 	implementation 'org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT'
 	//Since it uses NMS/OBC stuffs, it's required to manually add the bukkit jars.
 	implementation fileTree(dir: 'dependencies', include: '*.jar')
-	//ProtocolSupport
-	//implementation 'com.github.ProtocolSupport:ProtocolSupport:'
 	//Skript
 	implementation 'com.github.SkriptLang:Skript:2.6.1'
 	//Generex API. Used to expressions to generate strings from regex
 	compileWithJar 'com.github.mifmif:generex:1.0.2'
-	//ViaVersion
-	implementation 'com.viaversion:viaversion-api:4.0.0'
 	//SimpleClans
 	implementation 'net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.15.0'
 	//LandLord
