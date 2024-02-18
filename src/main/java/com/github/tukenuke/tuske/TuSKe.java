@@ -12,7 +12,6 @@ import com.github.tukenuke.tuske.nms.ReflectionNMS;
 import com.github.tukenuke.tuske.listeners.OnlineStatusCheck;
 import com.github.tukenuke.tuske.manager.gui.v2.SkriptGUIEvent;
 import com.github.tukenuke.tuske.hooks.landlord.LandlordRegister;
-import com.github.tukenuke.tuske.hooks.legendchat.LegendchatRegister;
 import com.github.tukenuke.tuske.hooks.marriage.MarriageRegister;
 import com.github.tukenuke.tuske.hooks.simpleclans.SimpleClansRegister;
 import com.github.tukenuke.tuske.util.Evaluate;
@@ -98,8 +97,6 @@ public class TuSKe extends JavaPlugin {
 			//TODO remove all dependencies and make them separated?
 			if (hasPlugin("SimpleClans") || hasPlugin("SimpleClansLegacy")) // It is the same plugin, but with different names. I don't know why
 				new SimpleClansRegister(tuske);
-			if (hasPlugin("Legendchat"))
-				new LegendchatRegister(tuske);
 			if (hasPlugin("Marriage"))
 				new MarriageRegister(tuske);
 			if (ReflectionUtils.hasClass("com.jcdesimp.landlord.persistantData.LowOwnedLand")) //TODO Landlord provides support for an older version of API. Update needed
