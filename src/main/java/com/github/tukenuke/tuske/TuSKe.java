@@ -132,38 +132,24 @@ public class TuSKe extends JavaPlugin {
 	}
 
 	public void info(String msg, Object... values) {
-		log(String.format(msg, values), Level.INFO);
+		log(msg, Level.INFO, values);
 	}
 
 	public void generateDocumentation() {
-		FileType type;
 		String config = getConfig().getString("documentation.file_type");
-		switch (config.toLowerCase()) {
-			case "yaml":
-			case "yml":
-				type = new YamlFile();
-				break;
-			case "json":
-				type = new JsonFile(false);
-				break;
-			case "raw_json":
-			case "raw json":
-				type = new JsonFile(true);
-				break;
-			case "markdown":
-				type = new MarkdownFile();
-				break;
-			case "default":
-			case "skript":
-			case "script":
-			case "sk":
-				type = new DefaultFile();
-				break;
-			default:
-				log("Unknown value for 'documentation.file_type': " + config + ".");
-				return;
+		FileType type = switch (config.toLowerCase()) {
+			case "yaml", "yml" -> new YamlFile();
+			case "json" -> new JsonFile(false);
+			case "raw_json", "raw json" -> new JsonFile(true);
+			case "markdown" -> new MarkdownFile();
+			case "default", "skript", "script", "sk" -> new DefaultFile();
+			default -> null;
+		};
+		if (type == null) {
+			log("Unknown value for 'documentation.file_type': " + config + ".");
+		} else {
+			new Documentation(this, type).load();
 		}
-		new Documentation(this, type).load();
 	}
 	@Override
 	public boolean onCommand(final CommandSender sender, Command cmd, String label, String[] arg){//TODO Remake this
@@ -369,6 +355,9 @@ public class TuSKe extends JavaPlugin {
 	}
 	public static void log(String msg, Level lvl){
 	    plugin.getLogger().log(lvl, msg);
+	}
+	public static void log(String msg, Level lvl, Object... args){
+	    plugin.getLogger().log(lvl, msg, args);
 	}
 	public static void log(Level lvl, String... msgs){
 		for (String msg : msgs)
