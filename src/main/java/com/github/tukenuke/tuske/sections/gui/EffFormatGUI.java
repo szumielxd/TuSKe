@@ -30,12 +30,12 @@ public class EffFormatGUI extends EffectSection {
 		String cr = "string/" + Classes.getExactClassInfo(ClickType.class).getCodeName();
 		Registry.newEffect(EffFormatGUI.class,
 				"(format|create|make) [a] %players%'s gui slot %-numbers% with %itemstack% [to [do] nothing]",
-				"(format|create|make) [a] %players%'s gui slot %-numbers% of with %itemstack% to close [(using|with) %-" + cr + "% [(button|click|action)]]",
-				"(format|create|make) [a] %players%'s gui slot %-numbers% of with %itemstack% to (run|exe[cute]) [(using|with) %-" + cr + "% [(button|click|action)]]",
-				"(format|create|make) [a] %players%'s gui slot %-numbers% of with %itemstack% to [close then] (run|exe[cute]) %commandsender% command %string% [(using|with) perm[ission] %-string%][[(,| and)] (using|with) %-" + cr + "% [(button|click|action)]][[(,| and)] (using|with) cursor [item] %-itemstack%]",
-				"(format|create|make) [a] %players%'s gui slot %-numbers% of with %itemstack% to [close then] (run|exe[cute]) function <.+>\\([<.*?>]\\)[[(,| and)] (using|with) %-" + cr + "% [(button|click|action)]][[(,| and)] (using|with) cursor [item] %-itemstack%]",
+				"(format|create|make) [a] %players%'s gui slot %-numbers% with %itemstack% to close [(using|with) %-" + cr + "% [(button|click|action)]]",
+				"(format|create|make) [a] %players%'s gui slot %-numbers% with %itemstack% to (run|exe[cute]) [(using|with) %-" + cr + "% [(button|click|action)]]",
+				"(format|create|make) [a] %players%'s gui slot %-numbers% with %itemstack% to [close then] (run|exe[cute]) %commandsender% command %string% [(using|with) perm[ission] %-string%][[(,| and)] (using|with) %-" + cr + "% [(button|click|action)]][[(,| and)] (using|with) cursor [item] %-itemstack%]",
+				"(format|create|make) [a] %players%'s gui slot %-numbers% with %itemstack% to [close then] (run|exe[cute]) function <.+>\\([<.*?>]\\)[[(,| and)] (using|with) %-" + cr + "% [(button|click|action)]][[(,| and)] (using|with) cursor [item] %-itemstack%]",
 				//"(format|create|make) [a] gui slot %numbers% of %players% with %itemstack% to [(1¦close|2¦open %-inventoy%) then] (run|exe[cute]) function <(.+)>\\([%-objects%[, %-objects%][, %-objects%][, %-objects%][, %-objects%][, %-objects%][, %-objects%][, %-objects%][, %-objects%][, %-objects%]]\\)[[(,| and)] (using|with) %-" + cr + "% [(button|click|action)]][[(,| and)] (using|with) cursor [item] %-itemstack%]",
-				"(format|create|make) [a] %players%'s gui slot %-numbers% of with %itemstack% to (run|exe[cute]) [gui [click]] event");
+				"(format|create|make) [a] %players%'s gui slot %-numbers% with %itemstack% to (run|exe[cute]) [gui [click]] event");
 	}
 
 	public static EffFormatGUI lastInstance = null;
@@ -68,8 +68,8 @@ public class EffFormatGUI extends EffectSection {
 			return false;
 		}
 		int max = arg.length;
-		s = (Expression<Number>) arg[0];
-		p = (Expression<Player>) arg[1];
+		p = (Expression<Player>) arg[0];
+		s = (Expression<Number>) arg[1];
 		i = (Expression<ItemStack>) arg[2]/*.getConvertedExpression(ItemStack.class)*/;
 		toClose = arg3.expr.contains("to close");
 		Type = arg1;
@@ -109,7 +109,7 @@ public class EffFormatGUI extends EffectSection {
 
 	@Override
 	public String toString(@Nullable Event e, boolean arg1) {		
-		return "format a gui slot " + (s != null ? s.toString(e, arg1) : -1) + " of " + p.toString(e, arg1) + " with " + i.toString(e, arg1);
+		return "format " + p.toString(e, arg1) + "'s gui slot " + (s != null ? s.toString(e, arg1) : -1) + " with " + i.toString(e, arg1);
 	}
 
 	@Override
