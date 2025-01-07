@@ -43,7 +43,7 @@ dependencies {
 	//ProtocolSupport
 	//implementation 'com.github.ProtocolSupport:ProtocolSupport:'
 	//Skript
-	implementation 'com.github.SkriptLang:Skript:2.6.1'
+	implementation 'com.github.SkriptLang:Skript:2.8.1'
 	//Generex API. Used to expressions to generate strings from regex
 	compileWithJar 'com.github.mifmif:generex:1.0.2'
 	//ViaVersion
