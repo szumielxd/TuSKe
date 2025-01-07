@@ -103,7 +103,7 @@ public class ExprCommandInfo extends SimpleExpression<String>{
 				if (cmds == null)
 					cmds = new HashMap<>();
 				if (cmds.containsKey(cmd)){
-					String result = cmds.get(cmd).getScript().getAbsolutePath();
+					String result = cmds.get(cmd).getScript().getConfig().getFile().getAbsolutePath();
 					if (result.toLowerCase().contains("scripts"))
 						result = result.split("scripts")[1].substring(1);
 					return new String[]{result};

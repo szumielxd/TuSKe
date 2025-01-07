@@ -27,7 +27,7 @@ public class SyntaxInfo {
 	public Boolean cancellable; //It needs to be null for non event syntax
 
 	public SyntaxInfo(SyntaxElementInfo info) {
-		Class<?> c = info.c;
+		Class<?> c = info.getElementClass();
 		if (c.isAnnotationPresent(NoDoc.class))
 			return;
 		if (c.isAnnotationPresent(Name.class))
@@ -53,7 +53,7 @@ public class SyntaxInfo {
 		else
 			return_type = "Object";
 		List<String> array = new ArrayList<>();
-		Expression expr = (Expression) ReflectionUtils.newInstance(info.c);
+		Expression expr = (Expression) ReflectionUtils.newInstance(info.getElementClass());
 		try {
 			for (Changer.ChangeMode mode : Changer.ChangeMode.values()) {
 				if (Changer.ChangerUtils.acceptsChange(expr, mode, classes))
@@ -182,7 +182,7 @@ public class SyntaxInfo {
 		if (Util.notEmpty(syntaxes)) {
 			syntaxes = syntaxes.clone();
 			for (int x = 0; x < syntaxes.length; x++)
-				syntaxes[x] = syntaxes[x].replaceAll("\\\\([()])", "$1").replaceAll("\\d+¦", "");
+				syntaxes[x] = syntaxes[x].replaceAll("\\\\([()])", "$1").replaceAll("\\d+Â¦", "");
 		}
 		return syntaxes;
 	}
