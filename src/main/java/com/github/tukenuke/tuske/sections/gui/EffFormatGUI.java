@@ -4,7 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.registrations.Classes;
 import com.github.tukenuke.tuske.TuSKe;
 import com.github.tukenuke.tuske.manager.gui.GUI;
-import com.github.tukenuke.tuske.manager.gui.v2.SkriptGUIEvent;
+import com.github.tukenuke.tuske.manager.gui.v2.SkriptGUIEventV2;
 import com.github.tukenuke.tuske.util.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -103,7 +103,7 @@ public class EffFormatGUI extends EffectSection {
 			i2 = arg[max - 1] != null ? (Expression<ItemStack>) arg[max - 1] : null;
 		}
 		//Just a safe check, to make sure the listener was registered when this is loaded
-		SkriptGUIEvent.getInstance().register();
+		SkriptGUIEventV2.getInstance().ensureRegistered();
 		return true;
 	}
 

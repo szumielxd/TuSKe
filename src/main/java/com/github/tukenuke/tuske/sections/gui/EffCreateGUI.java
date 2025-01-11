@@ -9,7 +9,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import com.github.tukenuke.tuske.manager.gui.v2.GUIInventory;
-import com.github.tukenuke.tuske.manager.gui.v2.SkriptGUIEvent;
+import com.github.tukenuke.tuske.manager.gui.v2.SkriptGUIEventV2;
 import com.github.tukenuke.tuske.util.LazyEffectSection;
 import com.github.tukenuke.tuske.manager.gui.v2.GUIHandler;
 import com.github.tukenuke.tuske.util.Registry;
@@ -93,7 +93,7 @@ public class EffCreateGUI extends LazyEffectSection {
 			str = (Expression<String>) arg[2];
 		}
 		//Just a safe check, to make sure the listener was registered when this is loaded
-		SkriptGUIEvent.getInstance().register();
+		SkriptGUIEventV2.getInstance().ensureRegistered();
 		return true;
 	}
 }

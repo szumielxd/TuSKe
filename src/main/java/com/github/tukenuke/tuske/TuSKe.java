@@ -10,7 +10,6 @@ import com.github.tukenuke.tuske.documentation.*;
 import com.github.tukenuke.tuske.manager.recipe.RecipeManager;
 import com.github.tukenuke.tuske.nms.ReflectionNMS;
 import com.github.tukenuke.tuske.listeners.OnlineStatusCheck;
-import com.github.tukenuke.tuske.manager.gui.v2.SkriptGUIEvent;
 import com.github.tukenuke.tuske.hooks.landlord.LandlordRegister;
 import com.github.tukenuke.tuske.hooks.legendchat.LegendchatRegister;
 import com.github.tukenuke.tuske.hooks.marriage.MarriageRegister;
@@ -115,7 +114,6 @@ public class TuSKe extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		SkriptGUIEvent.getInstance().unregisterAll();
 		if (gui != null)
 			gui.clearAll();
 		HandlerList.unregisterAll(this);
