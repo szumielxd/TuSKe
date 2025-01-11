@@ -36,6 +36,9 @@ configurations {
 }
 dependencies {
 	testImplementation 'junit:junit:4.12'
+	compileOnly 'org.projectlombok:lombok:1.18.36'
+	annotationProcessor 'org.projectlombok:lombok:1.18.36'
+	implementation 'org.jetbrains:annotations:26.0.1'
 	//This is the default bukkit version supported. It is just for javadocs and jar hierarchy
 	implementation 'org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT'
 	//Since it uses NMS/OBC stuffs, it's required to manually add the bukkit jars.
