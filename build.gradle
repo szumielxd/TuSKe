@@ -35,7 +35,10 @@ configurations {
 	compileWithJar
 }
 dependencies {
-	testImplementation 'junit:junit:4.12'
+	testImplementation 'junit:junit:4.13.1'
+	compileOnly 'org.projectlombok:lombok:1.18.36'
+	annotationProcessor 'org.projectlombok:lombok:1.18.36'
+	implementation 'org.jetbrains:annotations:26.0.1'
 	//This is the default bukkit version supported. It is just for javadocs and jar hierarchy
 	implementation 'org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT'
 	//Since it uses NMS/OBC stuffs, it's required to manually add the bukkit jars.
@@ -43,7 +46,7 @@ dependencies {
 	//ProtocolSupport
 	//implementation 'com.github.ProtocolSupport:ProtocolSupport:'
 	//Skript
-	implementation 'com.github.SkriptLang:Skript:2.6.1'
+	implementation 'com.github.SkriptLang:Skript:2.8.1'
 	//Generex API. Used to expressions to generate strings from regex
 	compileWithJar 'com.github.mifmif:generex:1.0.2'
 	//ViaVersion

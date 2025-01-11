@@ -1,6 +1,7 @@
 package com.github.tukenuke.tuske.documentation;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -49,15 +50,15 @@ public class Documentation implements Runnable{
 		//Now, let's organize all syntaxes
 		EventValuesGetter getter = new EventValuesGetter();
 		for (SkriptEventInfo<?> info : Skript.getEvents())
-			addSyntax(getAddon(info.c).getEvents(), new SyntaxInfo(info, getter));
+			addSyntax(getAddon(info.getElementClass()).getEvents(), new SyntaxInfo(info, getter));
 		for (SyntaxElementInfo<?> info : Skript.getConditions()) {
-			if (EffectSection.class.isAssignableFrom(info.c)) //Separate effect sections to effects instead of conditions
-				addSyntax(getAddon(info.c).getEffects(), new SyntaxInfo(info));
+			if (EffectSection.class.isAssignableFrom(info.getElementClass())) //Separate effect sections to effects instead of conditions
+				addSyntax(getAddon(info.getElementClass()).getEffects(), new SyntaxInfo(info));
 			else
-				addSyntax(getAddon(info.c).getConditions(), new SyntaxInfo(info));
+				addSyntax(getAddon(info.getElementClass()).getConditions(), new SyntaxInfo(info));
 		}
 		for (SyntaxElementInfo<?> info : Skript.getEffects())
-			addSyntax(getAddon(info.c).getEffects(), new SyntaxInfo(info));
+			addSyntax(getAddon(info.getElementClass()).getEffects(), new SyntaxInfo(info));
 		Class<?>[] types = new Class[Classes.getClassInfos().size()];
 		int x = 0;
 		for (ClassInfo<?> info : Classes.getClassInfos())
@@ -65,7 +66,7 @@ public class Documentation implements Runnable{
 		//A LogHandler for expressions since it catch the changers, which can throw errors in console
 		//such as "Expression X can only be used in event Y"
 		ParseLogHandler log = SkriptLogger.startParseLogHandler();
-		Skript.getExpressions().forEachRemaining(info -> addSyntax(getAddon(info.c).getExpressions(), new SyntaxInfo(info, types)));
+		Skript.getExpressions().forEachRemaining(info -> addSyntax(getAddon(info.getElementClass()).getExpressions(), new SyntaxInfo(info, types)));
 		log.clear();
 		log.stop();
 
@@ -96,7 +97,7 @@ public class Documentation implements Runnable{
 
 				}
 			}
-			try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"))) {
+			try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
 				fileType.write(writer, addon);
 			} catch (IOException io) {
 				io.printStackTrace();

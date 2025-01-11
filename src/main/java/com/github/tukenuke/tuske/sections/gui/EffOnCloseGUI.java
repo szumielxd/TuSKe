@@ -7,12 +7,12 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import com.github.tukenuke.tuske.manager.gui.v2.GUIInventory;
 import com.github.tukenuke.tuske.util.EffectSection;
 import com.github.tukenuke.tuske.manager.gui.v2.GUIHandler;
 import com.github.tukenuke.tuske.util.Registry;
-import com.github.tukenuke.tuske.util.VariableUtil;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
@@ -41,10 +41,9 @@ public class EffOnCloseGUI extends EffectSection {
 		if (hasSection()) {
 			GUIInventory gui = GUIHandler.getInstance().getGUIEvent(e);
 			if (gui != null) {
-				VariableUtil var = VariableUtil.getInstance();
-				Object vars = var.copyVariables(e);
+				Object vars = Variables.copyLocalVariables(e);
 				gui.onClose(event -> {
-					var.pasteVariables(event, vars);
+					Variables.setLocalVariables(event, vars);
 					runSection(event);
 				});
 			}

@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Tuke_Nuke on 16/02/2017
@@ -208,7 +209,7 @@ public class GUIInventory {
 		if (listener == null)
 			listener = new GUIListener(inv){
 				@Override
-				public void onClick(InventoryClickEvent e, int slot) {
+				public void onClick(@NotNull InventoryClickEvent e, int slot) {
 					Consumer<InventoryClickEvent> run = getSlot(slot);
 					e.setCancelled(run != null || isSlotsLocked());
 					if (run != null && slot == e.getSlot() && inv.equals(InventoryUtils.getClickedInventory(e))) {
@@ -217,7 +218,7 @@ public class GUIInventory {
 				}
 
 				@Override
-				public void onClose(InventoryCloseEvent e) {
+				public void onClose(@NotNull InventoryCloseEvent e) {
 					if (hasOnClose()){
 						GUIHandler.getInstance().setGUIEvent(e, GUIInventory.this);
 						try {
@@ -230,7 +231,7 @@ public class GUIInventory {
 				}
 
 				@Override
-				public void onDrag(InventoryDragEvent e, int slot) {
+				public void onDrag(@NotNull InventoryDragEvent e, int slot) {
 					if (getSlot(slot) != null)
 						e.setCancelled(true);
 				}
