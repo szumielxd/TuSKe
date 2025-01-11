@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class GUIManager {
 
@@ -126,7 +127,7 @@ public class GUIManager {
 	private void registerListener(Inventory inv) {
 		new GUIListener(inv) {
 			@Override
-			public void onClick(InventoryClickEvent e, int slot) {
+			public void onClick(@NotNull InventoryClickEvent e, int slot) {
 				if (isGUI(inv, slot)){
 					e.setCancelled(true);
 					final GUI gui = getGUI(inv, e.getSlot(), e.getClick());
@@ -152,14 +153,14 @@ public class GUIManager {
 			}
 
 			@Override
-			public void onClose(InventoryCloseEvent e) {
+			public void onClose(@NotNull InventoryCloseEvent e) {
 				Bukkit.getScheduler().runTaskLater(tuske, () -> {
 					removeAll(e.getInventory());
 					((Player)e.getPlayer()).updateInventory();}, 0L);
 			}
 
 			@Override
-			public void onDrag(InventoryDragEvent e, int slot) {
+			public void onDrag(@NotNull InventoryDragEvent e, int slot) {
 				if (isGUI(e.getInventory(), slot))
 					e.setCancelled(true);
 			}

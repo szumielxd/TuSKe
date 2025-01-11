@@ -12,7 +12,7 @@ import java.util.WeakHashMap;
  * @author Tuke_Nuke on 02/03/2017
  */
 public class GUIHandler {
-	private static GUIHandler ourInstance = new GUIHandler();
+	private static final GUIHandler ourInstance = new GUIHandler();
 
 	public static GUIHandler getInstance() {
 		return ourInstance;
@@ -21,19 +21,21 @@ public class GUIHandler {
 	private GUIHandler() {
 	}
 
-	private Map<String, GUIInventory> list = new HashMap<>();
+	private final Map<String, GUIInventory> list = new HashMap<>();
 
-	private WeakHashMap<Event, GUIInventory> eventGuis = new WeakHashMap<>();
+	private final WeakHashMap<Event, GUIInventory> eventGuis = new WeakHashMap<>();
 
 	public GUIInventory getGUIEvent(Event e) {
 		return e != null ? eventGuis.get(e) : null;
 	}
+
 	public void setGUIEvent(Event e, GUIInventory gui) {
 		if (e != null && gui != null)
 			eventGuis.put(e, gui);
 		else if (e != null)
 			eventGuis.remove(e);
 	}
+
 	public GUIInventory getGUI(Player p) {
 		if (p != null) {
 			GUIInventory gui = list.get("player:" + p.getUniqueId());
@@ -53,6 +55,7 @@ public class GUIHandler {
 	public GUIInventory removeGUI(String id) {
 		return list.remove(id);
 	}
+
 	public GUIInventory getGUI(String id){
 		return id != null && !id.isEmpty() ? list.get("id:" + id) : null;
 	}
