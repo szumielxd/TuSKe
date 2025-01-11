@@ -3,11 +3,11 @@ package com.github.tukenuke.tuske.sections.gui;
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
+import ch.njol.skript.variables.Variables;
 import com.github.tukenuke.tuske.manager.gui.v2.GUIInventory;
 import com.github.tukenuke.tuske.util.EffectSection;
 import com.github.tukenuke.tuske.manager.gui.v2.GUIHandler;
 import com.github.tukenuke.tuske.util.Registry;
-import com.github.tukenuke.tuske.util.VariableUtil;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -74,9 +74,9 @@ public class EffMakeGUI extends EffectSection {
 		Object[] slot = this.slot != null ? this.slot.getArray(e) : new Object[]{gui.nextSlot()};
 		for (Object s : slot) {
 			if (hasSection()) {
-				final Object variables = VariableUtil.getInstance().copyVariables(e);
+				final Object variables = Variables.copyLocalVariables(e);
 				gui.setItem(s, item, event -> {
-					VariableUtil.getInstance().pasteVariables(event, variables);
+					Variables.setLocalVariables(event, variables);
 					GUIHandler.getInstance().setGUIEvent(event, gui);
 					runSection(event);
 				});

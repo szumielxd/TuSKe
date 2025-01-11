@@ -2,6 +2,7 @@ package com.github.tukenuke.tuske.sections.gui;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.registrations.Classes;
+import ch.njol.skript.variables.Variables;
 import com.github.tukenuke.tuske.TuSKe;
 import com.github.tukenuke.tuske.manager.gui.GUI;
 import com.github.tukenuke.tuske.manager.gui.v2.SkriptGUIEventV2;
@@ -138,11 +139,11 @@ public class EffFormatGUI extends EffectSection {
 						}
 						if (hasSection()) {
 							Object copy = rn;
-							Object variablesMap = VariableUtil.getInstance().copyVariables(e);
+							Object variablesMap = Variables.copyLocalVariables(e);
 							rn = (Consumer<Event>) event -> {
 								if (copy != null)
 									((Runnable) copy).run();
-								VariableUtil.getInstance().pasteVariables(event, variablesMap);
+								Variables.setLocalVariables(event, variablesMap);
 								runSection(event);
 							};
 						}
