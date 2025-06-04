@@ -30,6 +30,9 @@ repositories {
 	maven {
 		url 'https://jitpack.io'
 	}
+	maven {
+		url 'https://repo.skriptlang.org/releases'
+	}
 }
 configurations {
 	compileWithJar
@@ -46,7 +49,7 @@ dependencies {
 	//ProtocolSupport
 	//implementation 'com.github.ProtocolSupport:ProtocolSupport:'
 	//Skript
-	implementation 'com.github.SkriptLang:Skript:2.8.1'
+	implementation 'com.github.SkriptLang:Skript:2.9.5'
 	//Generex API. Used to expressions to generate strings from regex
 	compileWithJar 'com.github.mifmif:generex:1.0.2'
 	//ViaVersion
