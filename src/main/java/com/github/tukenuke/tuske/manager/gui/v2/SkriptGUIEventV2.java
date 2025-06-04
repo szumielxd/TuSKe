@@ -5,6 +5,7 @@ import ch.njol.skript.lang.*;
 import ch.njol.util.Kleenean;
 import com.github.tukenuke.tuske.TuSKe;
 import com.github.tukenuke.tuske.listeners.GUIListener;
+import com.github.tukenuke.tuske.util.ReflectionUtils;
 import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -29,6 +30,15 @@ public class SkriptGUIEventV2 extends SkriptEvent {
 	private SkriptGUIEventV2() {
 		this.eventPriority = EventPriority.NORMAL;
 		this.trigger = new Trigger(null, "gui inventory click", this, Collections.singletonList(new SkriptDummyEffect()));
+
+		// backwards compatibility
+		Optional.ofNullable(ReflectionUtils.getClass("ch.njol.skript.lang.SkriptEvent$ListeningBehavior"))
+				.ifPresent(
+						clazz -> ReflectionUtils.setField(
+								SkriptEvent.class,
+								this,
+								"listeningBehavior",
+								ReflectionUtils.getField(clazz, null, "ANY")));
 	}
 
 	private void register() {
@@ -71,7 +81,8 @@ public class SkriptGUIEventV2 extends SkriptEvent {
 
 	@Override
 	public boolean check(@NotNull Event event) {
-		return event instanceof InventoryEvent && TuSKe.getGUIManager().hasGUI(((InventoryEvent) event).getInventory());
+		return event instanceof InventoryEvent
+				ev && TuSKe.getGUIManager().hasGUI(ev.getInventory());
 	}
 
 	@Override
