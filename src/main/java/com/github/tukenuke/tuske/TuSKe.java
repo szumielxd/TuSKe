@@ -384,7 +384,7 @@ public class TuSKe extends JavaPlugin {
 	public static NMS getNMS(){		
 		if (nms == null){
             nms = new ReflectionNMS(); //An default NMS class using reflection, in case it couldn't find it.
-            log("Couldn't find support for the Bukkit version '" +ReflectionUtils.packageVersion+ "'. Some expressions, such as \"player data of %offline player%\", may or may not work fine, so it's better to ask the developer about it." , Level.WARNING);
+            log("Couldn't find support for the Bukkit version '" +Bukkit.getVersion()+ "'. Some expressions, such as \"player data of %offline player%\", may or may not work fine, so it's better to ask the developer about it." , Level.WARNING);
 		}
 		return nms;
 	}

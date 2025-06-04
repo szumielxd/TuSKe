@@ -2,13 +2,13 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 17
 
 repositories {
 	mavenCentral()
-	//Spigot
+	//Paper
 	maven {
-		url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+		url 'https://repo.papermc.io/repository/maven-public/'
 	}
 	//Skript
 	maven {
@@ -30,23 +30,29 @@ repositories {
 	maven {
 		url 'https://jitpack.io'
 	}
+	maven {
+		url 'https://repo.skriptlang.org/releases'
+	}
 }
 configurations {
 	compileWithJar
 }
 dependencies {
-	testImplementation 'junit:junit:4.13.1'
-	compileOnly 'org.projectlombok:lombok:1.18.36'
-	annotationProcessor 'org.projectlombok:lombok:1.18.36'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+	testImplementation 'com.github.seeseemelk:MockBukkit-v1.19:3.1.0'
+	compileOnly 'org.projectlombok:lombok:1.18.38'
+	annotationProcessor 'org.projectlombok:lombok:1.18.38'
 	implementation 'org.jetbrains:annotations:26.0.1'
 	//This is the default bukkit version supported. It is just for javadocs and jar hierarchy
-	implementation 'org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT'
+	implementation 'io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT'
+	implementation 'commons-lang:commons-lang:2.6'
 	//Since it uses NMS/OBC stuffs, it's required to manually add the bukkit jars.
 	implementation fileTree(dir: 'dependencies', include: '*.jar')
 	//ProtocolSupport
 	//implementation 'com.github.ProtocolSupport:ProtocolSupport:'
 	//Skript
-	implementation 'com.github.SkriptLang:Skript:2.8.1'
+	implementation 'com.github.SkriptLang:Skript:2.9.5'
 	//Generex API. Used to expressions to generate strings from regex
 	compileWithJar 'com.github.mifmif:generex:1.0.2'
 	//ViaVersion
@@ -71,6 +77,10 @@ processResources {
 	filter ReplaceTokens, tokens: [
 			'version': project.property('version')
 	]
+}
+
+test {
+	useJUnitPlatform()
 }
 
 jar {

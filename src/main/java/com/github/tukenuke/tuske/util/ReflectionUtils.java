@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 
 import com.github.tukenuke.tuske.TuSKe;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Just a simple reflection class, just to not depend on Skript 2.2+ (I think it is the only thing I use from it)
@@ -13,8 +14,12 @@ import org.bukkit.Bukkit;
  */
 public class ReflectionUtils {
 
-	public static final String packageVersion = Bukkit.getServer().getClass().getPackage().getName().split(".v")[1];
-	
+	public static final String CRAFT_PACKAGE_NAME = Bukkit.getServer().getClass().getPackage().getName();
+
+	public static @Nullable Class<?> getCraftClass(String packageSuffix) {
+		return getClass(CRAFT_PACKAGE_NAME + "." + packageSuffix);
+	}
+
 	/**
 	 * Check if a class exists.
 	 * @param clz - The class path, like 'org.bukkit.entity.Player'
