@@ -6,9 +6,9 @@ sourceCompatibility = 17
 
 repositories {
 	mavenCentral()
-	//Spigot
+	//Paper
 	maven {
-		url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+		url 'https://repo.papermc.io/repository/maven-public/'
 	}
 	//Skript
 	maven {
@@ -38,7 +38,8 @@ configurations {
 	compileWithJar
 }
 dependencies {
-	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.13.0'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 	testImplementation 'com.github.seeseemelk:MockBukkit-v1.19:3.1.0'
 	compileOnly 'org.projectlombok:lombok:1.18.38'
 	annotationProcessor 'org.projectlombok:lombok:1.18.38'
@@ -75,6 +76,10 @@ processResources {
 	filter ReplaceTokens, tokens: [
 			'version': project.property('version')
 	]
+}
+
+test {
+	useJUnitPlatform()
 }
 
 jar {
