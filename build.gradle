@@ -39,7 +39,7 @@ configurations {
 }
 dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.13.0'
-	testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.19:4.50.0'
+	testImplementation 'com.github.seeseemelk:MockBukkit-v1.19:3.1.0'
 	compileOnly 'org.projectlombok:lombok:1.18.38'
 	annotationProcessor 'org.projectlombok:lombok:1.18.38'
 	implementation 'org.jetbrains:annotations:26.0.1'
